@@ -1,6 +1,12 @@
 from django.db import models
 from django.urls import reverse
 
+PLAYTIME = (
+    ('S', 'Sing'),
+    ('P', 'Pet'),
+    ('F', 'Feed')
+)
+
 # Create your models here.
 class Finch(models.Model):
     name = models.CharField(max_length=100)
@@ -13,3 +19,19 @@ class Finch(models.Model):
     
     def get_absolute_url(self):
         return reverse('detail', kwargs={'finch_id': self.id})
+    
+class Playing(models.Model):
+    date = models.DateField('play date')
+    play = models.CharField(
+        max_length=1,
+        choices=PLAYTIME,
+        default=PLAYTIME[0][0]
+    )
+
+    finch = models.ForeignKey(Finch, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.get_play_display()} on {self.date}"
+    
+    class Meta:
+        ordering = ['-date']
