@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from datetime import date
 
 PLAYTIME = (
     ('S', 'Sing'),
@@ -19,6 +20,9 @@ class Finch(models.Model):
     
     def get_absolute_url(self):
         return reverse('detail', kwargs={'finch_id': self.id})
+    
+    def play_for_today(self):
+        return self.playing_set.filter(date=date.today()).count() >= len(PLAYTIME)
     
 class Playing(models.Model):
     date = models.DateField('play date')
